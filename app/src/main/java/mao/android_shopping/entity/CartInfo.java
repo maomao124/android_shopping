@@ -16,6 +16,9 @@ package mao.android_shopping.entity;
 
 public class CartInfo
 {
+    /**
+     * id
+     */
     private int id;
 
     /**

@@ -324,4 +324,47 @@ public class CartDao extends SQLiteOpenHelper
 
         return cartInfo;
     }
+
+    /**
+     * 根据商品信息ID查询购物车信息
+     *
+     * @param goodsId 商品id
+     * @return {@link CartInfo}
+     */
+    private CartInfo queryCartInfoByGoodsId(int goodsId)
+    {
+        Cursor cursor = readDatabase.query(TABLE_NAME, null, "goodsId=?", new String[]{String.valueOf(goodsId)}, null, null, null);
+        CartInfo info = null;
+        if (cursor.moveToNext())
+        {
+            info = setCartInfo(cursor, new CartInfo());
+        }
+        return info;
+    }
+
+    /**
+     * 插入购物车信息
+     *
+     * @param goodsId 商品id
+     */
+    public void insertCartInfo(int goodsId)
+    {
+        // 如果购物车中不存在该商品，添加一条信息
+        CartInfo cartInfo = queryCartInfoByGoodsId(goodsId);
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("goodsId", goodsId);
+        if (cartInfo == null)
+        {
+            contentValues.put("count", 1);
+            writeDatabase.insert(TABLE_NAME, null, contentValues);
+        }
+        else
+        {
+            // 如果购物车中已经存在该商品，更新商品数量
+            contentValues.put("id", cartInfo.getId());
+            contentValues.put("count", cartInfo.getCount() + 1);
+
+            writeDatabase.update(TABLE_NAME, contentValues, "id=?", new String[]{String.valueOf(cartInfo.getId())});
+        }
+    }
 }

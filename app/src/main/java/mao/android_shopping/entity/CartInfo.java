@@ -19,7 +19,7 @@ public class CartInfo
     /**
      * id
      */
-    private int id;
+    private Integer id;
 
     /**
      * 商品编号
@@ -44,7 +44,7 @@ public class CartInfo
      * @param goodsId the goods id
      * @param count   the count
      */
-    public CartInfo(int id, int goodsId, int count)
+    public CartInfo(Integer id, int goodsId, int count)
     {
         this.id = id;
         this.goodsId = goodsId;
@@ -56,7 +56,7 @@ public class CartInfo
      *
      * @return the id
      */
-    public int getId()
+    public Integer getId()
     {
         return id;
     }
@@ -67,7 +67,7 @@ public class CartInfo
      * @param id the id
      * @return the id
      */
-    public CartInfo setId(int id)
+    public CartInfo setId(Integer id)
     {
         this.id = id;
         return this;

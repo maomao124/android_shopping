@@ -87,8 +87,8 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
     protected void onDestroy()
     {
         super.onDestroy();
-        cartDao.closeConnection();
-        goodsDao.closeConnection();
+        //cartDao.closeConnection();
+        //goodsDao.closeConnection();
     }
 
     @Override

@@ -4,8 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileOutputStream;
 import java.util.List;
 
 import mao.android_shopping.application.MainApplication;
@@ -30,6 +35,8 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
     private GridLayout gl_channel;
     private GoodsDao goodsDao;
     private CartDao cartDao;
+
+    private static final String TAG = "ShoppingChannelActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,6 +59,44 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         cartDao.openReadConnection();
         cartDao.openWriteConnection();
 
+        long count = goodsDao.getCount();
+        Log.d(TAG, "onCreate: count:" + count);
+
+        if (count == 0)
+        {
+            List<GoodsInfo> list = GoodsInfo.getDefaultList();
+            Log.d(TAG, "onCreate: \n" + list);
+
+            //list.forEach(goodsDao::insert);
+
+            for (GoodsInfo goodsInfo : list)
+            {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
+                String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+                saveImage(path, bitmap);
+                goodsInfo.setPicPath(path);
+                boolean insert = goodsDao.insert(goodsInfo);
+                if (insert)
+                {
+                    //toastShow("已初始化数据");
+                }
+                else
+                {
+                    toastShow("初始化数据失败");
+                }
+            }
+
+
+//            boolean insert = goodsDao.insert(list);
+//            if (insert)
+//            {
+//                toastShow("已初始化数据");
+//            }
+//            else
+//            {
+//                toastShow("初始化数据失败");
+//            }
+        }
 
         // 从数据库查询出商品信息，并展示
         showGoods();
@@ -89,6 +134,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
 
         for (GoodsInfo goodsInfo : list)
         {
+            Log.d(TAG, "showGoods: \n" + goodsInfo);
             // 获取布局文件item_goods.xml的根视图
             View view = LayoutInflater.from(this).inflate(R.layout.iten_goods, null);
             ImageView iv_thumb = view.findViewById(R.id.iv_thumb);
@@ -173,4 +219,25 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * 把位图数据保存到指定路径的图片文件
+     *
+     * @param path   路径
+     * @param bitmap Bitmap对象
+     */
+    public static boolean saveImage(String path, Bitmap bitmap)
+    {
+        // 根据指定的文件路径构建文件输出流对象
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path))
+        {
+            // 把位图数据压缩到文件输出流中
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
+            return true;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

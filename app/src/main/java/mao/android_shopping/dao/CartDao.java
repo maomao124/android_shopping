@@ -344,7 +344,8 @@ public class CartDao extends SQLiteOpenHelper
      */
     private CartInfo queryCartInfoByGoodsId(int goodsId)
     {
-        Cursor cursor = readDatabase.query(TABLE_NAME, null, "goodsId=?", new String[]{String.valueOf(goodsId)}, null, null, null);
+        Log.d(TAG, "queryCartInfoByGoodsId: goodsId:" + goodsId);
+        Cursor cursor = readDatabase.query(TABLE_NAME, new String[]{"*"}, "goodsId=?", new String[]{String.valueOf(goodsId)}, null, null, null);
         CartInfo info = null;
         if (cursor.moveToNext())
         {

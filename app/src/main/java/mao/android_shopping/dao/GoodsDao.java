@@ -151,7 +151,8 @@ public class GoodsDao extends SQLiteOpenHelper
                 " name VARCHAR NOT NULL," +
                 " description VARCHAR NOT NULL," +
                 " price FLOAT NOT NULL," +
-                " picPath VARCHAR NOT NULL);";
+                " picPath VARCHAR," +
+                " pic INTEGER NOT NULL)";
         db.execSQL(sql);
     }
 
@@ -239,6 +240,7 @@ public class GoodsDao extends SQLiteOpenHelper
             writeDatabase.beginTransaction();
             for (GoodsInfo goodsInfo : list)
             {
+                Log.d(TAG, "insert: \n" + goodsInfo);
                 boolean insert = this.insert(goodsInfo);
                 if (!insert)
                 {
@@ -298,6 +300,20 @@ public class GoodsDao extends SQLiteOpenHelper
         return delete > 0;
     }
 
+
+    /**
+     * 得到总数
+     *
+     * @return int
+     */
+    public long getCount()
+    {
+        Cursor cursor = writeDatabase.query(TABLE_NAME, new String[]{"count(*)"}, "1=1", null, null, null, null);
+        cursor.moveToNext();
+        long count = cursor.getLong(0);
+        cursor.close();
+        return count;
+    }
 
 
     /**

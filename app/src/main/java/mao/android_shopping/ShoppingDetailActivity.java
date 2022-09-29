@@ -76,8 +76,8 @@ public class ShoppingDetailActivity extends AppCompatActivity implements View.On
     protected void onDestroy()
     {
         super.onDestroy();
-        goodsDao.closeConnection();
-        cartDao.closeConnection();
+        //goodsDao.closeConnection();
+        //cartDao.closeConnection();
     }
 
     private void showDetail()

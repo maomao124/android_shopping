@@ -296,6 +296,17 @@ public class CartDao extends SQLiteOpenHelper
         return delete > 0;
     }
 
+    /**
+     * 删除所有
+     *
+     * @return boolean
+     */
+    public boolean deleteAll()
+    {
+        int delete = writeDatabase.delete(TABLE_NAME, "1=1", null);
+        return delete > 0;
+    }
+
 
     /**
      * 填充ContentValues
@@ -366,5 +377,17 @@ public class CartDao extends SQLiteOpenHelper
 
             writeDatabase.update(TABLE_NAME, contentValues, "id=?", new String[]{String.valueOf(cartInfo.getId())});
         }
+    }
+
+    /**
+     * 按商品id删除
+     *
+     * @param goodsId 商品id
+     * @return boolean
+     */
+    public boolean deleteByGoodsId(int goodsId)
+    {
+        int delete = writeDatabase.delete(TABLE_NAME, "goodsId=?", new String[]{String.valueOf(goodsId)});
+        return delete > 0;
     }
 }

@@ -19,6 +19,7 @@
             tools:targetApi="31">
 
         <activity android:name=".ShoppingCartActivity" />
+        <activity android:name=".ShoppingDetailActivity" />
 
         <activity
                 android:name=".ShoppingChannelActivity"

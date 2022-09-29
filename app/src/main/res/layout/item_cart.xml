@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/iv_thumb"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:scaleType="fitCenter"
+            android:contentDescription="图片" />
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:orientation="vertical">
+
+        <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="2"
+                android:gravity="left|center"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                tools:text="小米手机" />
+
+        <TextView
+                android:id="@+id/tv_desc"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="3"
+                android:gravity="left|center"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                tools:text="小米 MI10 8GB+128GB 钛银黑 5G手机 游戏拍照手机" />
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/tv_count"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="17sp"
+            tools:text="2" />
+
+    <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right|center"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            tools:text="1000" />
+
+    <TextView
+            android:id="@+id/tv_sum"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.2"
+            android:gravity="right|center"
+            android:textColor="#ff0000"
+            android:textSize="17sp"
+            tools:text="2000" />
+
+</LinearLayout>

@@ -13,32 +13,32 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import mao.android_shopping.entity.GoodsInfo;
+import mao.android_shopping.entity.CartInfo;
 
 /**
  * Project name(项目名称)：android_shopping
  * Package(包名): mao.android_shopping.dao
- * Class(类名): GoodsDao
+ * Class(类名): CartDao
  * Author(作者）: mao
  * Author QQ：1296193245
  * GitHub：https://github.com/maomao124/
  * Date(创建日期)： 2022/9/29
- * Time(创建时间)： 20:10
+ * Time(创建时间)： 20:19
  * Version(版本): 1.0
  * Description(描述)： 无
  */
 
-public class GoodsDao extends SQLiteOpenHelper
+public class CartDao extends SQLiteOpenHelper
 {
     /**
      * 数据库名字
      */
-    private static final String DB_NAME = "goods.db";
+    private static final String DB_NAME = "cart.db";
 
     /**
      * 表名
      */
-    private static final String TABLE_NAME = "goods";
+    private static final String TABLE_NAME = "cart";
 
     /**
      * 数据库版本
@@ -48,7 +48,7 @@ public class GoodsDao extends SQLiteOpenHelper
     /**
      * 实例，单例模式，懒汉式，双重检查锁方式
      */
-    private static volatile GoodsDao goodsDao = null;
+    private static volatile CartDao cartDao = null;
 
     /**
      * 读数据库
@@ -62,7 +62,7 @@ public class GoodsDao extends SQLiteOpenHelper
     /**
      * 标签
      */
-    private static final String TAG = "GoodsDao";
+    private static final String TAG = "CartDao";
 
 
     /**
@@ -70,7 +70,7 @@ public class GoodsDao extends SQLiteOpenHelper
      *
      * @param context 上下文
      */
-    public GoodsDao(@Nullable Context context)
+    public CartDao(@Nullable Context context)
     {
         super(context, DB_NAME, null, DB_VERSION);
     }
@@ -79,21 +79,21 @@ public class GoodsDao extends SQLiteOpenHelper
      * 获得实例
      *
      * @param context 上下文
-     * @return {@link GoodsDao}
+     * @return {@link CartDao}
      */
-    public static GoodsDao getInstance(Context context)
+    public static CartDao getInstance(Context context)
     {
-        if (goodsDao == null)
+        if (cartDao == null)
         {
-            synchronized (GoodsDao.class)
+            synchronized (CartDao.class)
             {
-                if (goodsDao == null)
+                if (cartDao == null)
                 {
-                    goodsDao = new GoodsDao(context);
+                    cartDao = new CartDao(context);
                 }
             }
         }
-        return goodsDao;
+        return cartDao;
     }
 
     /**
@@ -105,7 +105,7 @@ public class GoodsDao extends SQLiteOpenHelper
     {
         if (readDatabase == null || !readDatabase.isOpen())
         {
-            readDatabase = goodsDao.getReadableDatabase();
+            readDatabase = cartDao.getReadableDatabase();
         }
         return readDatabase;
     }
@@ -119,7 +119,7 @@ public class GoodsDao extends SQLiteOpenHelper
     {
         if (writeDatabase == null || !writeDatabase.isOpen())
         {
-            writeDatabase = goodsDao.getWritableDatabase();
+            writeDatabase = cartDao.getWritableDatabase();
         }
         return readDatabase;
     }
@@ -148,10 +148,8 @@ public class GoodsDao extends SQLiteOpenHelper
     {
         String sql = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                " name VARCHAR NOT NULL," +
-                " description VARCHAR NOT NULL," +
-                " price FLOAT NOT NULL," +
-                " picPath VARCHAR NOT NULL);";
+                " goodsId INTEGER NOT NULL," +
+                " count INTEGER NOT NULL);";
         db.execSQL(sql);
     }
 
@@ -172,19 +170,19 @@ public class GoodsDao extends SQLiteOpenHelper
     /**
      * 查询所有
      *
-     * @return {@link List}<{@link GoodsInfo}>
+     * @return {@link List}<{@link CartInfo}>
      */
-    public List<GoodsInfo> queryAll()
+    public List<CartInfo> queryAll()
     {
-        List<GoodsInfo> list = new ArrayList<>();
+        List<CartInfo> list = new ArrayList<>();
 
         Cursor cursor = readDatabase.query(TABLE_NAME, null, "1=1", new String[]{}, null, null, null);
 
         while (cursor.moveToNext())
         {
-            GoodsInfo goodsInfo = new GoodsInfo();
-            setGoodsInfo(cursor, goodsInfo);
-            list.add(goodsInfo);
+            CartInfo cartInfo = new CartInfo();
+            setCartInfo(cursor, cartInfo);
+            list.add(cartInfo);
         }
 
         cursor.close();
@@ -196,32 +194,32 @@ public class GoodsDao extends SQLiteOpenHelper
      * 通过id(主键)查询
      *
      * @param id id(主键)
-     * @return {@link GoodsInfo}
+     * @return {@link CartInfo}
      */
-    public GoodsInfo queryById(Serializable id)
+    public CartInfo queryById(Serializable id)
     {
-        GoodsInfo goodsInfo = null;
+        CartInfo cartInfo = null;
         Cursor cursor = readDatabase.query(TABLE_NAME, null, "id=?", new String[]{String.valueOf(id)}, null, null, null);
         if (cursor.moveToNext())
         {
-            goodsInfo = new GoodsInfo();
-            setGoodsInfo(cursor, goodsInfo);
+            cartInfo = new CartInfo();
+            setCartInfo(cursor, cartInfo);
         }
         cursor.close();
-        return goodsInfo;
+        return cartInfo;
     }
 
 
     /**
      * 插入一条数据
      *
-     * @param goodsInfo GoodsInfo对象
+     * @param cartInfo CartInfo对象
      * @return boolean
      */
-    public boolean insert(GoodsInfo goodsInfo)
+    public boolean insert(CartInfo cartInfo)
     {
         ContentValues contentValues = new ContentValues();
-        setContentValues(goodsInfo, contentValues);
+        setContentValues(cartInfo, contentValues);
         long insert = writeDatabase.insert(TABLE_NAME, null, contentValues);
         return insert > 0;
     }
@@ -232,14 +230,14 @@ public class GoodsDao extends SQLiteOpenHelper
      * @param list 列表
      * @return boolean
      */
-    public boolean insert(List<GoodsInfo> list)
+    public boolean insert(List<CartInfo> list)
     {
         try
         {
             writeDatabase.beginTransaction();
-            for (GoodsInfo goodsInfo : list)
+            for (CartInfo cartInfo : list)
             {
-                boolean insert = this.insert(goodsInfo);
+                boolean insert = this.insert(cartInfo);
                 if (!insert)
                 {
                     throw new Exception();
@@ -259,31 +257,31 @@ public class GoodsDao extends SQLiteOpenHelper
     /**
      * 更新
      *
-     * @param goodsInfo GoodsInfo对象
+     * @param cartInfo CartInfo对象
      * @return boolean
      */
-    public boolean update(GoodsInfo goodsInfo)
+    public boolean update(CartInfo cartInfo)
     {
         ContentValues contentValues = new ContentValues();
-        setContentValues(goodsInfo, contentValues);
-        int update = writeDatabase.update(TABLE_NAME, contentValues, "id=?", new String[]{String.valueOf(goodsInfo.getId())});
+        setContentValues(cartInfo, contentValues);
+        int update = writeDatabase.update(TABLE_NAME, contentValues, "id=?", new String[]{String.valueOf(cartInfo.getId())});
         return update > 0;
     }
 
     /**
      * 插入或更新，先尝试插入，如果插入失败，更新
      *
-     * @param goodsInfo GoodsInfo对象
+     * @param cartInfo CartInfo对象
      * @return boolean
      */
-    public boolean insertOrUpdate(GoodsInfo goodsInfo)
+    public boolean insertOrUpdate(CartInfo cartInfo)
     {
-        boolean insert = insert(goodsInfo);
+        boolean insert = insert(cartInfo);
         if (insert)
         {
             return true;
         }
-        return update(goodsInfo);
+        return update(cartInfo);
     }
 
     /**
@@ -299,41 +297,31 @@ public class GoodsDao extends SQLiteOpenHelper
     }
 
 
-
     /**
      * 填充ContentValues
      *
-     * @param goodsInfo     GoodsInfo
+     * @param cartInfo      CartInfo
      * @param contentValues ContentValues
      */
-    private void setContentValues(GoodsInfo goodsInfo, ContentValues contentValues)
+    private void setContentValues(CartInfo cartInfo, ContentValues contentValues)
     {
-        contentValues.put("id", goodsInfo.getId());
-        contentValues.put("name", goodsInfo.getName());
-        contentValues.put("description", goodsInfo.getDescription());
-        contentValues.put("price", goodsInfo.getPrice());
-        contentValues.put("picPath", goodsInfo.getPicPath());
-        contentValues.put("pic", goodsInfo.getPic());
+        contentValues.put("id", cartInfo.getId());
+        contentValues.put("goodsId", cartInfo.getGoodsId());
+        contentValues.put("count", cartInfo.getCount());
     }
 
     /**
-     * 填充GoodsInfo
+     * 填充CartInfo
      *
-     * @param cursor    游标
-     * @param goodsInfo GoodsInfo对象
+     * @param cursor   游标
+     * @param cartInfo CartInfo对象
      */
-    private GoodsInfo setGoodsInfo(Cursor cursor, GoodsInfo goodsInfo)
+    private CartInfo setCartInfo(Cursor cursor, CartInfo cartInfo)
     {
+        cartInfo.setId(cursor.getInt(0))
+                .setGoodsId(cursor.getInt(1))
+                .setCount(cursor.getInt(2));
 
-        goodsInfo.setId(cursor.getInt(0))
-                .setName(cursor.getString(1))
-                .setDescription(cursor.getString(2))
-                .setPrice(cursor.getFloat(3))
-                .setPicPath(cursor.getString(4))
-                .setPic(cursor.getInt(5));
-
-        return goodsInfo;
+        return cartInfo;
     }
-
-
 }

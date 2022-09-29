@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,10 +41,13 @@ public class ShoppingDetailActivity extends AppCompatActivity implements View.On
     private GoodsDao goodsDao;
     private CartDao cartDao;
 
+    private static final String TAG = "ShoppingDetailActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_shopping_detail);
         tv_title = findViewById(R.id.tv_title);
         tv_count = findViewById(R.id.tv_count);
@@ -76,6 +80,7 @@ public class ShoppingDetailActivity extends AppCompatActivity implements View.On
     protected void onDestroy()
     {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
         //goodsDao.closeConnection();
         //cartDao.closeConnection();
     }
@@ -84,7 +89,7 @@ public class ShoppingDetailActivity extends AppCompatActivity implements View.On
     {
         // 获取上一个页面传来的商品编号
         mGoodsId = getIntent().getIntExtra("goods_id", 0);
-        if (mGoodsId > 0)
+        if (mGoodsId >= 0)
         {
             // 根据商品编号查询商品数据库中的商品记录
             GoodsInfo goodsInfo = goodsDao.queryById(mGoodsId);

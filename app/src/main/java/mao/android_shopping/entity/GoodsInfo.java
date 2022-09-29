@@ -277,6 +277,39 @@ public class GoodsInfo
             info.pic = mPicArray[i];
             goodsList.add(info);
         }
+
+        for (int i = 0; i < mNameArray.length; i++)
+        {
+            GoodsInfo info = new GoodsInfo();
+            info.id = i + mNameArray.length;
+            info.name = mNameArray[i];
+            info.description = mDescArray[i];
+            info.price = mPriceArray[i];
+            info.pic = mPicArray[i];
+            goodsList.add(info);
+        }
+        for (int i = 0; i < mNameArray.length; i++)
+        {
+            GoodsInfo info = new GoodsInfo();
+            info.id = i + mNameArray.length * 2;
+            info.name = mNameArray[i];
+            info.description = mDescArray[i];
+            info.price = mPriceArray[i];
+            info.pic = mPicArray[i];
+            goodsList.add(info);
+        }
+        for (int i = 0; i < mNameArray.length; i++)
+        {
+            GoodsInfo info = new GoodsInfo();
+            info.id = i + mNameArray.length * 3;
+            info.name = mNameArray[i];
+            info.description = mDescArray[i];
+            info.price = mPriceArray[i];
+            info.pic = mPicArray[i];
+            goodsList.add(info);
+        }
+
+
         return goodsList;
     }
 

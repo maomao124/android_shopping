@@ -42,6 +42,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_shopping_channel);
         TextView tv_title = findViewById(R.id.tv_title);
         tv_title.setText("手机商场");
@@ -182,7 +183,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
     protected void onDestroy()
     {
         super.onDestroy();
-
+        Log.d(TAG, "onDestroy: ");
         goodsDao.closeConnection();
         cartDao.closeConnection();
     }

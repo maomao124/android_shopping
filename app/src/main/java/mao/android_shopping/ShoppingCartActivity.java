@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,10 +55,13 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
     private CartDao cartDao;
     private GoodsDao goodsDao;
 
+    private static final String TAG = "ShoppingCartActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_shopping_cart);
         TextView tv_title = findViewById(R.id.tv_title);
         tv_title.setText("购物车");
@@ -87,6 +91,7 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
     protected void onDestroy()
     {
         super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
         //cartDao.closeConnection();
         //goodsDao.closeConnection();
     }
@@ -109,6 +114,9 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
         mCartList = cartDao.queryAll();
         if (mCartList.size() == 0)
         {
+            Log.d(TAG, "showCart: 购物车为空");
+            ll_empty.setVisibility(View.VISIBLE);
+            ll_content.setVisibility(View.GONE);
             return;
         }
 
@@ -252,7 +260,7 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
                 MainApplication.getInstance().count = 0;
                 // 显示最新的商品数量
                 showCount();
-                toastShow( "购物车已清空");
+                toastShow("购物车已清空");
                 break;
 
             case R.id.btn_settle:

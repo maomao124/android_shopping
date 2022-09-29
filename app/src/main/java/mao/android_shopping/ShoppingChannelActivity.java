@@ -2,6 +2,7 @@ package mao.android_shopping;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -50,6 +51,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         cartDao = CartDao.getInstance(this);
         cartDao.openReadConnection();
         cartDao.openWriteConnection();
+
 
         // 从数据库查询出商品信息，并展示
         showGoods();
@@ -139,6 +141,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         cartDao.closeConnection();
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v)
     {

@@ -227,6 +227,7 @@ public class ShoppingCartActivity extends AppCompatActivity implements View.OnCl
         tv_total_price.setText(String.valueOf(totalPrice));
     }
 
+    @SuppressLint("NonConstantResourceId")
     @Override
     public void onClick(View v)
     {

@@ -19,6 +19,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.List;
 
@@ -27,6 +29,7 @@ import mao.android_shopping.dao.CartDao;
 import mao.android_shopping.dao.GoodsDao;
 import mao.android_shopping.entity.CartInfo;
 import mao.android_shopping.entity.GoodsInfo;
+import mao.android_shopping.entity.Result;
 
 public class ShoppingChannelActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -70,12 +73,29 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
 
             //list.forEach(goodsDao::insert);
 
+//            for (GoodsInfo goodsInfo : list)
+//            {
+//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
+//                String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+//                saveImage(path, bitmap);
+//                goodsInfo.setPicPath(path);
+//                boolean insert = goodsDao.insert(goodsInfo);
+//                if (insert)
+//                {
+//                    //toastShow("已初始化数据");
+//                }
+//                else
+//                {
+//                    toastShow("初始化数据失败");
+//                }
+//            }
+
             for (GoodsInfo goodsInfo : list)
             {
-                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
-                String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
-                saveImage(path, bitmap);
-                goodsInfo.setPicPath(path);
+                //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
+                //String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+                //saveImage(path, bitmap);
+                //goodsInfo.setPicPath(path);
                 boolean insert = goodsDao.insert(goodsInfo);
                 if (insert)
                 {
@@ -144,7 +164,8 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
             Button btn_add = view.findViewById(R.id.btn_add);
 
             //给控件设置值
-            iv_thumb.setImageURI(Uri.parse(goodsInfo.getPicPath()));
+            //iv_thumb.setImageURI(Uri.parse(goodsInfo.getPicPath()));
+            iv_thumb.setImageBitmap(getImageBitmap(goodsInfo));
             tv_name.setText(goodsInfo.getName());
             tv_price.setText(String.valueOf((int) goodsInfo.getPrice()));
 
@@ -241,4 +262,141 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
             return false;
         }
     }
+
+    /**
+     * 从指定路径的图片文件中读取位图数据
+     *
+     * @param path 路径
+     * @return {@link Bitmap}
+     */
+    public static Bitmap openImage(String path)
+    {
+        // 声明一个位图对象
+        Bitmap bitmap = null;
+        // 根据指定的文件路径构建文件输入流对象
+        try (FileInputStream fileInputStream = new FileInputStream(path))
+        {
+            // 从文件输入流中解码位图数据
+            bitmap = BitmapFactory.decodeStream(fileInputStream);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    /**
+     * 从指定路径的图片文件中读取位图数据
+     *
+     * @param file File对象
+     * @return {@link Bitmap}
+     */
+    public static Bitmap openImage(File file)
+    {
+        // 声明一个位图对象
+        Bitmap bitmap = null;
+        // 根据指定的文件路径构建文件输入流对象
+        try (FileInputStream fileInputStream = new FileInputStream(file))
+        {
+            // 从文件输入流中解码位图数据
+            bitmap = BitmapFactory.decodeStream(fileInputStream);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    /**
+     * 得到图像位图
+     *
+     * @param goodsInfo GoodsInfo对象
+     * @return {@link Bitmap}
+     */
+    public Bitmap getImageBitmap(GoodsInfo goodsInfo)
+    {
+        if (goodsInfo.getPicPath() != null && !"".equals(goodsInfo.getPicPath()))
+        {
+            Bitmap bitmap = openImage(goodsInfo.getPicPath());
+            if (bitmap != null)
+            {
+                //GoodsInfo里有缓存的图片路径，并且加载到了图片的路径，直接返回
+                return bitmap;
+            }
+            //GoodsInfo里有缓存的图片路径，但是没有加载到图片的路径
+            //图片不存在，路径失效，需要再次从网络加载
+            Result result = getImageBitmapByHTTP(goodsInfo);
+            bitmap = result.getBitmap();
+            if (!result.isResult())
+            {
+                //从网络上加载失败失败，直接使用
+                return bitmap;
+            }
+            //保存
+            String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+            boolean b = saveImageBitmap(goodsInfo, bitmap, path);
+            if (!b)
+            {
+                //保存失败，直接使用
+                return bitmap;
+            }
+            //保存成功
+            //更新数据库
+            goodsInfo.setPicPath(path);
+            goodsDao.update(goodsInfo);
+            return bitmap;
+        }
+        //不存在，第一次加载
+        Result result = getImageBitmapByHTTP(goodsInfo);
+        Bitmap bitmap = result.getBitmap();
+        if (!result.isResult())
+        {
+            //从网络上加载失败失败，直接使用
+            return bitmap;
+        }
+        //保存
+        String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+        boolean b = saveImageBitmap(goodsInfo, bitmap, path);
+        if (!b)
+        {
+            //保存失败，直接使用
+            return bitmap;
+        }
+        //保存成功
+        //更新数据库
+        goodsInfo.setPicPath(path);
+        goodsDao.update(goodsInfo);
+        return bitmap;
+    }
+
+    /**
+     * 保存图像位图
+     *
+     * @param goodsInfo 货物信息
+     */
+    public boolean saveImageBitmap(GoodsInfo goodsInfo, Bitmap bitmap, String path)
+    {
+        return saveImage(path, bitmap);
+    }
+
+
+    /**
+     * 模拟从网络上获取图片
+     *
+     * @return {@link Bitmap}
+     */
+    public Result getImageBitmapByHTTP(GoodsInfo goodsInfo)
+    {
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
+        if (bitmap == null)
+        {
+            //为空，加载默认的图片
+            bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.test);
+            return new Result().setResult(false).setBitmap(bitmap);
+        }
+        return new Result().setResult(true).setBitmap(bitmap);
+    }
+
 }

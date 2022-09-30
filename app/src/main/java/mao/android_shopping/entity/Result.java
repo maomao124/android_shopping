@@ -17,25 +17,54 @@ import android.graphics.Bitmap;
 
 public class Result
 {
+    /**
+     * 结果
+     */
     boolean result;
+
+    /**
+     * 位图
+     */
     Bitmap bitmap;
 
+    /**
+     * Is result boolean.
+     *
+     * @return the boolean
+     */
     public boolean isResult()
     {
         return result;
     }
 
+    /**
+     * Sets result.
+     *
+     * @param result the result
+     * @return the result
+     */
     public Result setResult(boolean result)
     {
         this.result = result;
         return this;
     }
 
+    /**
+     * Gets bitmap.
+     *
+     * @return the bitmap
+     */
     public Bitmap getBitmap()
     {
         return bitmap;
     }
 
+    /**
+     * Sets bitmap.
+     *
+     * @param bitmap the bitmap
+     * @return the bitmap
+     */
     public Result setBitmap(Bitmap bitmap)
     {
         this.bitmap = bitmap;

@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -27,9 +26,18 @@ import java.util.List;
 import mao.android_shopping.application.MainApplication;
 import mao.android_shopping.dao.CartDao;
 import mao.android_shopping.dao.GoodsDao;
-import mao.android_shopping.entity.CartInfo;
 import mao.android_shopping.entity.GoodsInfo;
 import mao.android_shopping.entity.Result;
+
+
+/**
+ * Class(类名): ShoppingChannelActivity
+ * Author(作者）: mao
+ * Author QQ：1296193245
+ * GitHub：https://github.com/maomao124/
+ * Version(版本): 1.0
+ * Description(描述)： 商品列表页
+ */
 
 public class ShoppingChannelActivity extends AppCompatActivity implements View.OnClickListener
 {
@@ -158,7 +166,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         {
             Log.d(TAG, "showGoods: \n" + goodsInfo);
             // 获取布局文件item_goods.xml的根视图
-            View view = LayoutInflater.from(this).inflate(R.layout.iten_goods, null);
+            View view = LayoutInflater.from(this).inflate(R.layout.item_goods, null);
             ImageView iv_thumb = view.findViewById(R.id.iv_thumb);
             TextView tv_name = view.findViewById(R.id.tv_name);
             TextView tv_price = view.findViewById(R.id.tv_price);

@@ -37,7 +37,7 @@ import mao.android_shopping.entity.GoodsInfo;
  * Date(创建日期)： 2022/9/29
  * Time(创建时间)： 20:58
  * Version(版本): 1.0
- * Description(描述)： 无
+ * Description(描述)： 购物车页
  */
 
 public class ShoppingCartActivity extends AppCompatActivity implements View.OnClickListener

@@ -90,6 +90,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
 //                }
 //            }
 
+            toastShow("正在初始化数据");
             for (GoodsInfo goodsInfo : list)
             {
                 //Bitmap bitmap = BitmapFactory.decodeResource(getResources(), goodsInfo.getPic());
@@ -103,7 +104,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
                 }
                 else
                 {
-                    toastShow("初始化数据失败");
+                    //toastShow("初始化数据失败");
                 }
             }
 
@@ -319,14 +320,17 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
     {
         if (goodsInfo.getPicPath() != null && !"".equals(goodsInfo.getPicPath()))
         {
+            Log.d(TAG, "getImageBitmap: 加载图片");
             Bitmap bitmap = openImage(goodsInfo.getPicPath());
             if (bitmap != null)
             {
                 //GoodsInfo里有缓存的图片路径，并且加载到了图片的路径，直接返回
                 return bitmap;
             }
+            Log.d(TAG, "getImageBitmap: 本地图片缓存不存在，需要重新加载：" + goodsInfo.getId());
             //GoodsInfo里有缓存的图片路径，但是没有加载到图片的路径
             //图片不存在，路径失效，需要再次从网络加载
+            Log.d(TAG, "getImageBitmap: 从网络上加载图片");
             Result result = getImageBitmapByHTTP(goodsInfo);
             bitmap = result.getBitmap();
             if (!result.isResult())
@@ -336,6 +340,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
             }
             //保存
             String path = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).toString() + "/" + goodsInfo.getId() + ".jpg";
+            Log.d(TAG, "getImageBitmap: 保存图片，位置：" + path);
             boolean b = saveImageBitmap(goodsInfo, bitmap, path);
             if (!b)
             {
@@ -346,8 +351,10 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
             //更新数据库
             goodsInfo.setPicPath(path);
             goodsDao.update(goodsInfo);
+            Log.d(TAG, "getImageBitmap: 更新数据库");
             return bitmap;
         }
+        Log.d(TAG, "getImageBitmap: 第一次加载图片");
         //不存在，第一次加载
         Result result = getImageBitmapByHTTP(goodsInfo);
         Bitmap bitmap = result.getBitmap();
@@ -368,6 +375,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         //更新数据库
         goodsInfo.setPicPath(path);
         goodsDao.update(goodsInfo);
+        Log.d(TAG, "getImageBitmap: 更新数据库");
         return bitmap;
     }
 

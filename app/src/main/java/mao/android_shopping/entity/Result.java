@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
  * Description(描述)： 无
  */
 
+
 public class Result
 {
     /**
@@ -26,6 +27,26 @@ public class Result
      * 位图
      */
     Bitmap bitmap;
+
+    /**
+     * Instantiates a new Result.
+     */
+    public Result()
+    {
+
+    }
+
+    /**
+     * Instantiates a new Result.
+     *
+     * @param result the result
+     * @param bitmap the bitmap
+     */
+    public Result(boolean result, Bitmap bitmap)
+    {
+        this.result = result;
+        this.bitmap = bitmap;
+    }
 
     /**
      * Is result boolean.

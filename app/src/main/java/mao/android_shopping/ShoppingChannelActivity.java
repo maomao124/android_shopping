@@ -56,7 +56,7 @@ public class ShoppingChannelActivity extends AppCompatActivity implements View.O
         Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_shopping_channel);
         TextView tv_title = findViewById(R.id.tv_title);
-        tv_title.setText("手机商场");
+        tv_title.setText("手机商城");
 
         tv_count = findViewById(R.id.tv_count);
         gl_channel = findViewById(R.id.gl_channel);
